@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Briant Entertainment | Independent Game Studio</title>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;700&family=Inter:wght@300;400;600&display=swap');
+
+        :root {
+            --bg-color: #030303;
+            --surface-color: #0c0c0c;
+            --surface-hover: #161616;
+            --text-main: #e0e0e0;
+            --text-muted: #888888;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --steam-green: #a3ff00;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3 { font-family: 'Orbitron', sans-serif; text-transform: uppercase; letter-spacing: 1px; }
+        .font-ui, button, nav a, .lang-btn, .role-badge { font-family: 'Rajdhani', sans-serif; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* GRID BACKGROUND */
+        .bg-grid {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-image: linear-gradient(to right, rgba(255,255,255,0.015) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.015) 1px, transparent 1px);
+            background-size: 40px 40px; z-index: -1; pointer-events: none;
+        }
+
+        /* HEADER - REDUCED PADDING */
+        header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0.8rem 5%; border-bottom: 1px solid var(--border-color);
+            background: rgba(3, 3, 3, 0.95); backdrop-filter: blur(8px);
+            position: sticky; top: 0; z-index: 100;
+        }
+        .logo-container { display: flex; align-items: center; gap: 12px; }
+        .logo-container img { width: 38px; height: 38px; object-fit: contain; }
+        .logo-container h2 { font-size: 1.1rem; }
+        
+        nav { display: flex; align-items: center; gap: 1rem; }
+        nav a { color: var(--text-main); text-decoration: none; font-weight: 700; font-size: 0.9rem; transition: color 0.3s; cursor: pointer; }
+        nav a:hover { color: white; }
+
+        .lang-switcher { display: flex; gap: 4px; background: var(--surface-color); border: 1px solid var(--border-color); border-radius: 4px; overflow: hidden; }
+        .lang-btn { background: transparent; color: var(--text-muted); border: none; padding: 4px 8px; cursor: pointer; font-weight: bold; font-size: 0.75rem; transition: 0.3s; }
+        .lang-btn.active { background: white; color: black; }
+        .lang-btn:hover:not(.active) { color: white; }
+
+        /* SECTIONS - REDUCED SPACING */
+        section { padding: 1.8rem 5%; max-width: 1200px; margin: 0 auto; }
+        .section-title { font-size: 1.6rem; margin-bottom: 1rem; border-left: 4px solid white; padding-left: 10px; }
+
+        /* BUTTONS */
+        .btn {
+            display: inline-flex; justify-content: center; align-items: center; gap: 8px;
+            padding: 8px 16px; background: white; color: black; text-decoration: none;
+            font-weight: 700; border-radius: 4px; transition: all 0.3s; border: 1px solid white; cursor: pointer;
+            font-family: 'Rajdhani', sans-serif; text-transform: uppercase; font-size: 0.9rem;
+        }
+        .btn:hover { background: transparent; color: white; }
+        .btn-outline { background: var(--surface-color); color: white; border-color: var(--border-color); }
+        .btn-outline:hover { background: white; color: black; }
+
+        /* STUDIO HERO */
+        .hero-desc { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 1rem; line-height: 1.6; }
+        .tools-container { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 0.8rem; }
+        .tool-badge {
+            display: inline-flex; align-items: center; gap: 8px; padding: 5px 12px;
+            background: var(--surface-color); border: 1px solid var(--border-color);
+            border-radius: 20px; font-family: 'Rajdhani', sans-serif; font-weight: 600; font-size: 0.8rem;
+        }
+        .tool-badge .u-logo {
+            font-family: 'Orbitron'; font-size: 1rem; color: white; font-weight: 900; background: #222; width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; border-radius: 4px;
+        }
+
+        /* TEAM - DETAILED, NO AGE, NO PHOTOS */
+        .team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
+        .team-card {
+            background: var(--surface-color); border: 1px solid var(--border-color);
+            padding: 1.2rem; border-radius: 6px; transition: transform 0.3s, border-color 0.3s;
+        }
+        .team-card:hover { transform: translateY(-3px); border-color: rgba(255,255,255,0.3); }
+        .team-card h3 { font-size: 1rem; margin-bottom: 4px; color: white; }
+        .team-card .role-badge { color: var(--steam-green); font-size: 0.75rem; display: block; margin-bottom: 6px; font-weight: 700; }
+        .team-card p { font-size: 0.82rem; color: var(--text-muted); line-height: 1.4; }
+
+        /* GAMES */
+        .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.2rem; }
+        
+        .game-card-small {
+            position: relative; height: 340px; border: 1px solid var(--border-color);
+            border-radius: 6px; overflow: hidden; display: flex; flex-direction: column;
+            justify-content: flex-end; cursor: pointer; transition: 0.3s ease;
+            background: #000;
+        }
+        .game-card-small:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.4); }
+
+        .game-card-bg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, rgba(0,0,0,0.1) 10%, rgba(0,0,0,0.75) 60%, rgba(0,0,0,0.95) 100%), url('Outbreak2.jpeg');
+            background-size: cover; background-position: center; z-index: 1; transition: transform 0.5s ease;
+        }
+        .game-card-small:hover .game-card-bg { transform: scale(1.04); }
+
+        .game-card-content {
+            position: relative; z-index: 2; padding: 1.2rem;
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.8) 70%, transparent 100%);
+        }
+        .game-card-content h3 { font-size: 1.2rem; margin-bottom: 4px; }
+        .game-card-content p { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 10px; }
+
+        /* MYSTERY GAME CARDS (INTERACTIVE ROTATING QUESTION MARK) */
+        .mystery-card {
+            border: 1px dashed var(--border-color); background: var(--surface-color);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            text-align: center; padding: 2rem; height: 340px; border-radius: 6px; cursor: pointer;
+            transition: border-color 0.3s;
+        }
+        .mystery-card:hover { border-color: white; }
+        .mystery-icon {
+            font-size: 2rem; color: var(--text-muted); margin-bottom: 10px;
+            display: inline-block; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .mystery-card:hover .mystery-icon { transform: rotate(360deg); color: white; }
+
+        /* MODALS */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(8px);
+            z-index: 1000; display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: 0.3s ease;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
+        .modal-content {
+            background: var(--surface-color); border: 1px solid var(--border-color);
+            width: 90%; max-width: 850px; max-height: 85vh; border-radius: 6px; overflow-y: auto;
+            position: relative; padding: 2rem; transform: translateY(15px); transition: 0.3s ease;
+        }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+        
+        .close-btn {
+            position: absolute; top: 12px; right: 12px; background: transparent; color: white;
+            border: none; font-size: 1.2rem; cursor: pointer; padding: 6px; z-index: 10;
+        }
+
+        .modal-video { width: 100%; aspect-ratio: 16/9; background: black; margin-bottom: 12px; border-radius: 4px; border: 1px solid var(--border-color); }
+        .modal-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px; margin-top: 12px;}
+        .modal-gallery img { width: 100%; height: 110px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border-color); }
+
+        /* ROADMAP MODAL - ALL WHITE ACCENTS EXCEPT FASE ACTUAL */
+        #roadmap-modal .modal-content {
+            background: linear-gradient(to bottom, rgba(0,0,0,0.85), rgba(0,0,0,0.96)), url('Sin título-6.jpg');
+            background-size: cover; background-position: center; border: 1px solid white;
+        }
+        .roadmap-item { margin-bottom: 1.2rem; border-left: 2px solid white; padding-left: 12px; position: relative; }
+        .roadmap-item::before {
+            content: ''; position: absolute; left: -7px; top: 0; width: 12px; height: 12px;
+            background: white; border-radius: 50%;
+        }
+        .roadmap-item.current-phase { border-left-color: var(--steam-green); }
+        .roadmap-item.current-phase::before { background: var(--steam-green); }
+
+        /* FAQ SECTION WITH SELECTOR */
+        .faq-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 10px; }
+        .game-select { background: var(--surface-color); color: white; border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 4px; font-family: 'Rajdhani'; font-weight: bold; cursor: pointer; font-size: 0.9rem; }
+        
+        .faq-list { display: none; }
+        .faq-list.active { display: block; }
+
+        .faq-item { background: var(--surface-color); border: 1px solid var(--border-color); border-radius: 4px; margin-bottom: 6px; overflow: hidden; }
+        .faq-question { padding: 10px 15px; cursor: pointer; font-family: 'Orbitron'; font-size: 0.8rem; display: flex; justify-content: space-between; align-items: center; }
+        .faq-question:hover { background: rgba(255,255,255,0.03); }
+        .faq-answer { padding: 0 15px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease; color: var(--text-muted); font-size: 0.85rem; }
+        .faq-item.active .faq-answer { padding: 10px 15px; max-height: 180px; border-top: 1px solid var(--border-color); }
+
+        /* DEVLOG & ADMIN PASSWORD MODAL */
+        .devlog-post { background: var(--surface-color); border: 1px solid var(--border-color); padding: 1.2rem; border-radius: 4px; margin-bottom: 12px; }
+        .devlog-post img { max-width: 100%; border-radius: 4px; margin-top: 10px; }
+        
+        .admin-panel { display: none; background: #121212; padding: 1.2rem; border: 1px dashed white; margin-bottom: 1.2rem; border-radius: 4px; }
+        .admin-panel input, .admin-panel textarea { width: 100%; padding: 8px; margin-bottom: 8px; background: #000; color: white; border: 1px solid #333; font-family: 'Inter'; border-radius: 4px; font-size: 0.9rem; }
+
+        /* PASSWORD MODAL OVERLAY */
+        #pwd-modal .modal-content { max-width: 380px; text-align: center; }
+        #pwd-modal input { width: 100%; padding: 10px; margin: 12px 0; background: #000; border: 1px solid var(--border-color); color: white; border-radius: 4px; font-size: 1rem; text-align: center; }
+
+        /* DONATIONS SECTION - ONLY PAYPAL & PATREON */
+        .donate-buttons { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 0.6rem; }
+        .donate-btn {
+            display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 6px;
+            font-weight: bold; cursor: pointer; transition: 0.3s; border: none; font-family: 'Rajdhani';
+            text-transform: uppercase; font-size: 0.9rem; text-decoration: none;
+        }
+        .donate-patreon { background: #FF424D; color: white; }
+        .donate-paypal { background: #00457C; color: white; }
+        .donate-btn:hover { transform: translateY(-3px); filter: brightness(1.15); }
+
+        /* PROFESSIONAL FAB-STYLE FOOTER */
+        .fab-footer { background: #070707; border-top: 1px solid #1a1a1a; padding: 2rem 5% 1.2rem; font-family: 'Inter', sans-serif; font-size: 0.78rem; margin-top: 2rem; color: #888; }
+        .fab-top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
+        
+        .fab-socials { display: flex; gap: 10px; }
+        .social-icon-btn {
+            width: 36px; height: 36px; display: flex; justify-content: center; align-items: center;
+            background: #161616; border: 1px solid #282828; color: #aaa;
+            border-radius: 6px; font-size: 1rem; transition: 0.2s; text-decoration: none;
+        }
+        .social-icon-btn:hover { background: white; color: black; transform: scale(1.1); border-color: white; }
+
+        .fab-footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 1.2rem; margin-bottom: 1.5rem; }
+        .fab-col h4 { color: white; margin-bottom: 0.6rem; font-weight: 600; font-size: 0.8rem; }
+        .fab-col a { display: block; color: #777; text-decoration: none; margin-bottom: 0.4rem; transition: color 0.2s; }
+        .fab-col a:hover { color: white; }
+
+        .fab-bottom { border-top: 1px solid #161616; padding-top: 1rem; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; }
+        .fab-legal a { color: white; text-decoration: none; margin-right: 1rem; font-weight: 500; cursor: pointer; }
+        .fab-legal a:hover { text-decoration: underline; }
+        .fab-logos { display: flex; gap: 12px; align-items: center; opacity: 0.7; font-weight: bold; font-family: 'Orbitron'; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+
+    <div class="bg-grid"></div>
+
+    <header>
+        <div class="logo-container">
+            <img src="https://drive.google.com/uc?id=1FgRADLZxdhX7HiOENvXPseZbJtku_RLx" alt="Briant Entertainment">
+            <h2>Briant Ent.</h2>
+        </div>
+        <nav>
+            <a href="#estudio" data-i18n="nav_studio">Estudio</a>
+            <a href="#juegos" data-i18n="nav_games">Juegos</a>
+            <a onclick="openModal('roadmap-modal')" data-i18n="nav_roadmap"><i class="fa-solid fa-map-location-dot"></i> Roadmap</a>
+            <a href="#devlog" data-i18n="nav_devlog">Devlog</a>
+            <a href="#apoyo" data-i18n="nav_support">Apoyo</a>
+            
+            <div class="lang-switcher">
+                <button class="lang-btn active" onclick="changeLang('es')" id="btn-es">ES</button>
+                <button class="lang-btn" onclick="changeLang('en')" id="btn-en">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- ESTUDIO Y FILOSOFÍA -->
+    <section id="estudio">
+        <h2 class="section-title" data-i18n="title_origin">El Origen</h2>
+        <p class="hero-desc">
+            <span data-i18n="origin_p1">Empezamos este viaje cuando nuestro desarrollador principal tenía solo 12 años. Con la inocente ilusión de crear un mundo abierto masivo a corto plazo, nos sumergimos de lleno en el desarrollo independiente. Tras años de intenso aprendizaje, resolución de errores lógicos y optimización, entendimos la verdadera magnitud de la industria.</span>
+            <br><br>
+            <span data-i18n="origin_p2">Hoy, con casi 15 años de edad, esa visión inicial se ha transformado en código real y proyectos publicados. Somos una familia unida forjando universos y experiencias interactivas desde cero. Cada línea de código y cada modelo 3D refleja nuestra dedicación absoluta y pasión por los videojuegos.</span>
+        </p>
+        
+        <div class="tools-container">
+            <span class="tool-badge"><span class="u-logo">U</span> UNREAL ENGINE 5</span>
+            <span class="tool-badge"><i class="fa-solid fa-shapes" style="color: #ea7600;"></i> BLENDER</span>
+            <span class="tool-badge"><i class="fa-solid fa-palette" style="color: #0078d7;"></i> PAINT 3D</span>
+        </div>
+    </section>
+
+    <!-- EQUIPO BASE (DETALLADO, SIN EDAD, SIN FOTOS) -->
+    <section>
+        <h2 class="section-title" data-i18n="title_team">El Equipo Base</h2>
+        <div class="team-grid">
+            <div class="team-card">
+                <h3>Bruno Fermín Betancourt Martínez</h3>
+                <span class="role-badge" data-i18n="role_dev_main">Desarrollador Principal y Creador</span>
+                <p data-i18n="desc_bruno">Arquitecto principal del código y la lógica de juego. Responsable absoluto de la programación en Unreal Engine, optimización de sistemas y ensamblaje de mecánicas interactivas de supervivencia.</p>
+            </div>
+            <div class="team-card">
+                <h3>Yendri Betancourt Fernández</h3>
+                <span class="role-badge" data-i18n="role_design">Diseño de Ideas y Producción</span>
+                <p data-i18n="desc_yendri">Ideólogo estratégico y co-creador de mecánicas. Aporta la visión fundamental, el diseño conceptual y la guía creativa que impulsa la dirección de cada proyecto del estudio.</p>
+            </div>
+            <div class="team-card">
+                <h3>Arisleidy Márquez Gómez</h3>
+                <span class="role-badge" data-i18n="role_finance">Manager de Finanzas</span>
+                <p data-i18n="desc_ari">Eje organizativo y administrativo del estudio. Controla la estabilidad financiera, gestión de recursos, licencias y la infraestructura operativa general del equipo.</p>
+            </div>
+            <div class="team-card">
+                <h3>Maydelis Martínez De La Coba</h3>
+                <span class="role-badge" data-i18n="role_creative">Dirección Creativa e Inspiración</span>
+                <p data-i18n="desc_may">Alma artística y emocional del equipo. Su perspectiva alimenta la atmósfera visual, la ambientación y el rumbo narrativo de nuestros mundos virtuales.</p>
+            </div>
+            <div class="team-card">
+                <h3>Eddy Alejandro</h3>
+                <span class="role-badge" data-i18n="role_tester">Tester Principal</span>
+                <p data-i18n="desc_eddy">Encargado del control de calidad y auditoría de bugs. Pone a prueba cada sistema, IA y mapa hasta el límite para garantizar estabilidad y rendimiento óptimo.</p>
+            </div>
+            <div class="team-card">
+                <h3>Nolo Sidney</h3>
+                <span class="role-badge" data-i18n="role_dev_sec">Segundo Desarrollador (Fases Tempranas)</span>
+                <p data-i18n="desc_nolo">Apoyo especializado durante los ciclos iniciales. Contribuyó en la arquitectura de redes P2P y preparación de bases para las pruebas multijugador.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- JUEGOS -->
+    <section id="juegos">
+        <h2 class="section-title" data-i18n="title_games">Nuestros Juegos</h2>
+        <div class="games-grid">
+            
+            <!-- OUTBREAK CARD (SMALLER) -->
+            <div class="game-card-small" onclick="openModal('outbreak-modal')">
+                <div class="game-card-bg"></div>
+                <div class="game-card-content">
+                    <h3>OUTBREAK</h3>
+                    <p data-i18n="outbreak_short_desc">Sobrevive en un entorno hostil P2P. Explora, construye y enfréntate a infectados mutantes.</p>
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px;">
+                        <span style="font-family: 'Rajdhani'; font-size: 1.05rem; color: var(--steam-green); font-weight: bold;">$9.99 USD</span>
+                        <span class="btn" style="padding: 4px 10px; font-size: 0.78rem;"><i class="fa-solid fa-circle-info"></i> Detalles</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MYSTERY GAME 1 -->
+            <div class="mystery-card" onclick="openMysteryModal()">
+                <div class="mystery-icon"><i class="fa-solid fa-question"></i></div>
+                <h3 style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 4px;">[ PRÓXIMAMENTE ]</h3>
+                <p class="font-ui text-muted" style="font-size: 0.78rem;" data-i18n="mystery_desc_1">Proyecto secreto en fase de desarrollo conceptual temprano.</p>
+            </div>
+
+            <!-- MYSTERY GAME 2 -->
+            <div class="mystery-card" onclick="openMysteryModal()">
+                <div class="mystery-icon"><i class="fa-solid fa-question"></i></div>
+                <h3 style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 4px;">[ PRÓXIMAMENTE ]</h3>
+                <p class="font-ui text-muted" style="font-size: 0.78rem;" data-i18n="mystery_desc_2">Nueva experiencia inmersiva en incubación técnica.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- OUTBREAK DETAILED MODAL -->
+    <div id="outbreak-modal" class="modal-overlay" onclick="closeModalOnBgClick(event, 'outbreak-modal')">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('outbreak-modal')">✕</button>
+            
+            <div style="margin-bottom: 12px;">
+                <h2>OUTBREAK: THE LAST SURVIVOR</h2>
+                <span class="font-ui text-muted"><i class="fa-brands fa-steam"></i> <span data-i18n="avail_steam">Disponible en Steam</span></span>
+            </div>
+
+            <video id="outbreak-video" class="modal-video" controls poster="https://drive.google.com/uc?id=1GKhIFHI1pSE-_dsX4dIMznj_JwqEKx6f">
+                <source src="TrailerOficialOutbreak.mp4" type="video/mp4">
+            </video>
+
+            <p style="margin-bottom: 10px; color: #ccc; font-size: 0.9rem;" data-i18n="ob_desc_1">Experiencia de supervivencia P2P inmersiva (con servidores dedicados próximos). Inspirado en la exploración abierta tipo DayZ, <strong>no hay caminos prefijados; cada jugador forja su propia narrativa.</strong></p>
+            <p style="color: #ccc; margin-bottom: 20px; font-size: 0.9rem;" data-i18n="ob_desc_2">Enfréntate a infectados con patrones únicos: corredores rápidos, unidades explosivas y mutaciones severas. <em>(Nuevos jefes y mecánicas en desarrollo activo).</em></p>
+
+            <div style="display: flex; gap: 15px; align-items: center; margin-bottom: 20px;">
+                <span style="font-size: 1.4rem; font-family: 'Rajdhani'; font-weight: bold; color: var(--steam-green);">$9.99 USD</span>
+                <a href="https://store.steampowered.com/app/4205960/OutBreak_The_Last_Survivor/" target="_blank" class="btn">
+                    <i class="fa-brands fa-steam"></i> <span data-i18n="btn_steam">Obtener en Steam</span>
+                </a>
+            </div>
+
+            <h3 style="border-bottom: 1px solid var(--border-color); padding-bottom: 6px; font-size: 1rem;" data-i18n="gallery_title">Galería Oficial</h3>
+            <div class="modal-gallery">
+                <img src="https://drive.google.com/uc?id=1Hf8f-CTzQEcr5HB6P0g7N8x9FD6ohWny" alt="Screen 1">
+                <img src="https://drive.google.com/uc?id=1jGtuakGh0uDpQPOsxGmCH6DIRVnngW-N" alt="Screen 2">
+                <img src="https://drive.google.com/uc?id=1rkoZFjzrbqGTG__42LmaBevQ1lcsMK7R" alt="Screen 3">
+                <img src="https://drive.google.com/uc?id=1GKhIFHI1pSE-_dsX4dIMznj_JwqEKx6f" alt="Screen 4">
+            </div>
+        </div>
+    </div>
+
+    <!-- ROADMAP MODAL - WHITE ACCENTS EXCEPT FASE ACTUAL -->
+    <div id="roadmap-modal" class="modal-overlay" onclick="closeModalOnBgClick(event, 'roadmap-modal')">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('roadmap-modal')">✕</button>
+            <h2 style="margin-bottom: 20px; font-size: 1.8rem; text-shadow: 2px 2px 4px black;"><i class="fa-solid fa-map"></i> Hoja de Ruta</h2>
+            
+            <div class="roadmap-item current-phase">
+                <h3 style="color: var(--steam-green);">Fase Actual: Estabilización P2P</h3>
+                <p data-i18n="rm_1">Lanzamiento oficial en Steam. Depuración intensiva de errores, balanceo de infectados básicos (corredores y explosivos) y optimización general de rendimiento.</p>
+            </div>
+            <div class="roadmap-item">
+                <h3 style="color: white;">Próxima Gran Actualización: Expansión de Servidores</h3>
+                <p data-i18n="rm_2">Implementación progresiva de Servidores Dedicados globales, adición de nuevas variantes mutantes de enemigos y el primer jefe de zona principal.</p>
+            </div>
+            <div class="roadmap-item">
+                <h3 style="color: white;">Soporte para Gamepad y Consolas</h3>
+                <p data-i18n="rm_3">Integración total de mandos y preparación técnica para adaptaciones en PlayStation, Nintendo Switch, Xbox y Steam Deck.</p>
+            </div>
+            <div class="roadmap-item">
+                <h3 style="color: white;">Nuevos Mapas y Nuevos Horizontes</h3>
+                <p data-i18n="rm_4">Expansión masiva de terreno con nuevas zonas de exploración, sistemas de vehículos terrestres y refugios avanzados.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- DEVLOG & ADMIN PANEL WITH SECURE BASE64 PASSWORD -->
+    <section id="devlog">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem;">
+            <h2 class="section-title" style="margin-bottom: 0; border: none; padding: 0;" data-i18n="title_devlog">Diario de Desarrollo</h2>
+            <i class="fa-solid fa-lock" style="font-size: 1rem; color: #555; cursor: pointer; padding: 8px;" onclick="openAdminPrompt()" title="Panel de Administrador"></i>
+        </div>
+        
+        <!-- ADMIN PANEL PROTECTED -->
+        <div id="admin-panel" class="admin-panel">
+            <h3 style="color: white; margin-bottom: 10px; font-size: 0.95rem;"><i class="fa-solid fa-pen"></i> Publicar Nueva Actualización</h3>
+            <input type="text" id="devlog-title" placeholder="Título (Ej: Actualización de Servidores)">
+            <textarea id="devlog-content" rows="3" placeholder="Escribe los detalles aquí..."></textarea>
+            <label style="display: block; margin-bottom: 6px; color: var(--text-muted); font-size: 0.85rem;"><i class="fa-solid fa-image"></i> Cargar Imagen:</label>
+            <input type="file" id="devlog-image" accept="image/*" onchange="previewImage(event)" style="background: transparent; border: none; color: white;">
+            <img id="image-preview" style="max-width: 140px; display: none; margin-bottom: 8px; border-radius: 4px;">
+            <br>
+            <button class="btn" onclick="publishDevlog()"><i class="fa-solid fa-upload"></i> Publicar Nota</button>
+        </div>
+
+        <div id="devlog-feed">
+            <p style="color: var(--text-muted); font-size: 0.9rem;" id="empty-devlog" data-i18n="empty_devlog">Aún no hay actualizaciones publicadas. Vuelve pronto.</p>
+        </div>
+    </section>
+
+    <!-- FAQ SECTION WITH GAME SELECTOR TABS -->
+    <section id="faq">
+        <div class="faq-header-row">
+            <h2 class="section-title" style="margin-bottom: 0; border: none; padding: 0;" data-i18n="title_faq">Preguntas Frecuentes</h2>
+            <select class="game-select" onchange="switchFaqGame(this.value)">
+                <option value="outbreak">OUTBREAK: The Last Survivor</option>
+                <option value="other1">Otros Juegos en Desarrollo [?]</option>
+                <option value="other2">Otros Juegos en Desarrollo [?]</option>
+            </select>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 1.2rem;" data-i18n="faq_subtitle">Selecciona un título para consultar sus preguntas específicas.</p>
+
+        <!-- OUTBREAK FAQS -->
+        <div id="faq-outbreak" class="faq-list active">
+            <div class="faq-item" onclick="this.classList.toggle('active')">
+                <div class="faq-question"><span>¿En OutBreak habrá servidores dedicados próximamente?</span><i class="fa-solid fa-chevron-down"></i></div>
+                <div class="faq-answer"><p>Sí, los servidores dedicados forman nuestra máxima prioridad en la hoja de ruta actual y llegarán tras consolidar la fase P2P inicial.</p></div>
+            </div>
+            <div class="faq-item" onclick="this.classList.toggle('active')">
+                <div class="faq-question"><span>¿En OutBreak habrá vehículos personalizables y utilizables?</span><i class="fa-solid fa-chevron-down"></i></div>
+                <div class="faq-answer"><p>Sí, la mecánica de reparación, personalización y conducción de vehículos terrestres está completamente planeada para fases avanzadas del mapa principal.</p></div>
+            </div>
+            <div class="faq-item" onclick="this.classList.toggle('active')">
+                <div class="faq-question"><span>¿El juego cuenta con una historia lineal o modo campaña?</span><i class="fa-solid fa-chevron-down"></i></div>
+                <div class="faq-answer"><p>No existe una ruta fija. OutBreak es un sandbox de supervivencia libre inspirado en DayZ donde cada jugador escribe su propio destino mediante la exploración.</p></div>
+            </div>
+            <div class="faq-item" onclick="this.classList.toggle('active')">
+                <div class="faq-question"><span>¿Cuáles son los requisitos recomendados para OutBreak?</span><i class="fa-solid fa-chevron-down"></i></div>
+                <div class="faq-answer"><p>El título está optimizado para funcionar fluidamente en equipos de gama media. Puedes revisar los detalles exactos en su ficha oficial de Steam.</p></div>
+            </div>
+            <div class="faq-item" onclick="this.classList.toggle('active')">
+                <div class="faq-question"><span>¿Habrá soporte para mods o Steam Workshop?</span><i class="fa-solid fa-chevron-down"></i></div>
+                <div class="faq-answer"><p>Es una posibilidad que nos entusiasma enormemente para el futuro, pero nuestra prioridad absoluta actual es consolidar la estabilidad de las mecánicas base.</p></div>
+            </div>
+            <div class="faq-item" onclick="this.classList.toggle('active')">
+                <div class="faq-question"><span>¿Cómo puedo reportar un bug o error crítico?</span><i class="fa-solid fa-chevron-down"></i></div>
+                <div class="faq-answer"><p>Puedes unirte a nuestra comunidad oficial de Discord y documentarlo en el canal dedicado a retroalimentación. ¡Agradecemos profundamente el reporte de los jugadores!</p></div>
+            </div>
+            <div class="faq-item" onclick="this.classList.toggle('active')">
+                <div class="faq-question"><span>¿Qué tipos de infectados hay actualmente en el juego?</span><i class="fa-solid fa-chevron-down"></i></div>
+                <div class="faq-answer"><p>Actualmente te enfrentarás a infectados estándar, veloces corredores y variantes explosivas peligrosas, además de nuevos jefes en desarrollo continuo.</p></div>
+            </div>
+            <div class="faq-item" onclick="this.classList.toggle('active')">
+                <div class="faq-question"><span>¿Saldrá una versión para consolas (PlayStation / Xbox / Switch)?</span><i class="fa-solid fa-chevron-down"></i></div>
+                <div class="faq-answer"><p>Nuestro enfoque principal actual es la versión de PC en Steam, pero el soporte para consolas está planificado en nuestra hoja de ruta oficial.</p></div>
+            </div>
+        </div>
+
+        <!-- OTHER GAME 1 FAQS -->
+        <div id="faq-other1" class="faq-list">
+            <div class="faq-item" onclick="this.classList.toggle('active')">
+                <div class="faq-question"><span>¿Cuándo se revelará el título oficial de este proyecto?</span><i class="fa-solid fa-chevron-down"></i></div>
+                <div class="faq-answer"><p>Anunciaremos el nombre y los primeros adelantos visuales tan pronto como alcancemos una fase alfa jugable estable.</p></div>
+            </div>
+            <div class="faq-item" onclick="this.classList.toggle('active')">
+                <div class="faq-question"><span>¿Compartirá el mismo motor gráfico que OutBreak?</span><i class="fa-solid fa-chevron-down"></i></div>
+                <div class="faq-answer"><p>Sí, estamos aprovechando todo el potencial de Unreal Engine 5 para este nuevo desarrollo.</p></div>
+            </div>
+        </div>
+
+        <!-- OTHER GAME 2 FAQS -->
+        <div id="faq-other2" class="faq-list">
+            <div class="faq-item" onclick="this.classList.toggle('active')">
+                <div class="faq-question"><span>¿De qué género será este segundo proyecto secreto?</span><i class="fa-solid fa-chevron-down"></i></div>
+                <div class="faq-answer"><p>Será una experiencia completamente distinta a OutBreak, explorando nuevas mecánicas de interacción y atmósfera.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DONACIONES & APOYO (SOLO PAYPAL & PATREON) -->
+    <section id="apoyo">
+        <h2 class="section-title" data-i18n="title_support">Apoya el Desarrollo</h2>
+        <p style="color: var(--text-muted); font-size: 0.9rem; max-width: 700px; margin-bottom: 0.8rem;" data-i18n="support_desc">Todo nuestro esfuerzo es independiente. Tu contribución directa nos ayuda a costear licencias de software, herramientas de desarrollo y servidores dedicados.</p>
+        
+        <div class="donate-buttons">
+            <a href="https://patreon.com" target="_blank" class="donate-btn donate-patreon">
+                <i class="fa-brands fa-patreon"></i> Patreon
+            </a>
+            <a href="https://paypal.com" target="_blank" class="donate-btn donate-paypal">
+                <i class="fa-brands fa-paypal"></i> PayPal
+            </a>
+        </div>
+    </section>
+
+    <!-- PROFESSIONAL FAB-STYLE FOOTER WITH USER SOCIALS -->
+    <footer class="fab-footer">
+        <div class="fab-top-row">
+            <div class="fab-socials">
+                <a href="https://www.tiktok.com/@epicarcgamesepica" target="_blank" class="social-icon-btn" title="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+                <a href="https://www.instagram.com/briantentertainment/" target="_blank" class="social-icon-btn" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://www.youtube.com/@BriantEntertainment" target="_blank" class="social-icon-btn" title="YouTube"><i class="fa-brands fa-youtube"></i></a>
+                <a href="https://steamcommunity.com/profiles/76561199888010870/" target="_blank" class="social-icon-btn" title="Steam"><i class="fa-brands fa-steam"></i></a>
+                <a href="https://discord.com/users/1380632658740121641" target="_blank" class="social-icon-btn" title="Discord"><i class="fa-brands fa-discord"></i></a>
+            </div>
+        </div>
+
+        <div class="fab-footer-grid">
+            <div class="fab-col">
+                <h4>Briant Ent.</h4>
+                <a href="#estudio">Acerca del estudio</a>
+                <a href="#juegos">Nuestros Juegos</a>
+                <a href="#devlog">Diario de Desarrollo</a>
+                <a href="#apoyo">Apóyanos</a>
+            </div>
+            <div class="fab-col">
+                <h4>Mercados</h4>
+                <a href="https://store.steampowered.com/app/4205960/OutBreak_The_Last_Survivor/" target="_blank">Steam Store</a>
+                <a href="https://briant-entertainment.itch.io" target="_blank">Itch.io Store</a>
+            </div>
+            <div class="fab-col">
+                <h4>Herramientas</h4>
+                <a href="#">Unreal Engine 5</a>
+                <a href="#">Blender</a>
+                <a href="#">Paint 3D</a>
+            </div>
+            <div class="fab-col">
+                <h4>Servicios</h4>
+                <a href="#">Soporte P2P</a>
+                <a href="#">Comunidad Online</a>
+                <a href="#">Servidores Dedicados</a>
+            </div>
+            <div class="fab-col">
+                <h4>Recursos</h4>
+                <a onclick="openModal('roadmap-modal')">Hoja de Ruta</a>
+                <a href="#faq">Preguntas Frecuentes</a>
+                <a href="mailto:eepicarcgames@gmail.com">Contacto Directo</a>
+            </div>
+            <div class="fab-col">
+                <h4>Compañía</h4>
+                <a href="#estudio">Noticias & Prensa</a>
+                <a href="mailto:eepicarcgames@gmail.com">Empleo / Colaborar</a>
+                <a href="#">Comunidad</a>
+            </div>
+        </div>
+
+        <div class="fab-bottom">
+            <div style="max-width: 700px;">
+                <p style="margin-bottom: 0.6rem; line-height: 1.4; color: #777;">© 2026 Briant Entertainment. Todos los derechos reservados. OutBreak y los logotipos de Briant Entertainment son marcas comerciales registradas. Desarrollado de forma independiente.</p>
+                <div class="fab-legal">
+                    <a href="#">Condiciones de servicio</a>
+                    <a href="#" onclick="openModal('privacy-modal')">Política de privacidad</a>
+                </div>
+            </div>
+            <div class="fab-logos">
+                <span>BRIANT</span>
+                <i class="fa-solid fa-gamepad"></i>
+            </div>
+        </div>
+    </footer>
+
+    <!-- PASSWORD MODAL FOR ADMIN DEVLOG -->
+    <div id="pwd-modal" class="modal-overlay" onclick="closeModalOnBgClick(event, 'pwd-modal')">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('pwd-modal')">✕</button>
+            <h3 style="margin-bottom: 10px; font-size: 1.1rem;">Acceso Desarrollador</h3>
+            <p style="color: var(--text-muted); font-size: 0.8rem;">Introduce la clave para publicar actualizaciones.</p>
+            <input type="password" id="admin-pwd-input" placeholder="Contraseña...">
+            <br>
+            <button class="btn" onclick="verifyAdminPassword()">Entrar</button>
+        </div>
+    </div>
+
+    <!-- PRIVACY POLICY MODAL -->
+    <div id="privacy-modal" class="modal-overlay" onclick="closeModalOnBgClick(event, 'privacy-modal')">
+        <div class="modal-content" style="max-width: 750px;">
+            <button class="close-btn" onclick="closeModal('privacy-modal')">✕</button>
+            <h2 style="margin-bottom: 15px; font-size: 1.5rem; border-left: 4px solid white; padding-left: 10px;">Política de Privacidad</h2>
+            <div style="color: var(--text-muted); font-size: 0.88rem; line-height: 1.6;">
+                <p style="margin-bottom: 10px;"><strong>Última actualización:</strong> Octubre 2026</p>
+                <p style="margin-bottom: 10px;">En <strong>Briant Entertainment</strong> priorizamos y protegemos tu privacidad. Como estudio independiente, nuestra misión principal es crear videojuegos memorables, no recopilar datos personales innecesarios.</p>
+                <p style="margin-bottom: 10px;">No almacenamos información bancaria ni datos confidenciales de nuestros usuarios directamente en nuestros servidores. Las interacciones comerciales y de soporte se realizan a través de pasarelas seguras externas (como Steam, Patreon o PayPal), las cuales operan bajo sus propias normativas de seguridad.</p>
+                <p style="margin-top: 15px; font-family: 'Rajdhani'; color: white;">Para consultas técnicas o de privacidad, contáctanos en: <em>eepicarcgames@gmail.com</em></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script>
+        // 1. TRADUCCIONES BILINGÜES (ES / EN)
+        const translations = {
+            es: {
+                nav_studio: "Estudio", nav_games: "Juegos", nav_support: "Apoyo", nav_roadmap: "Roadmap", nav_devlog: "Devlog",
+                title_origin: "El Origen", title_team: "El Equipo Base", title_games: "Nuestros Títulos", title_devlog: "Diario de Desarrollo",
+                title_faq: "Preguntas Frecuentes", faq_subtitle: "Selecciona un título para consultar sus preguntas específicas.",
+                title_support: "Apoya el Desarrollo",
+                origin_p1: "Empezamos este viaje cuando nuestro desarrollador principal tenía solo 12 años. Con la inocente ilusión de crear un mundo abierto masivo a corto plazo, nos sumergimos de lleno en el desarrollo independiente. Tras años de intenso aprendizaje, resolución de errores lógicos y optimización, entendimos la verdadera magnitud de la industria.",
+                origin_p2: "Hoy, con casi 15 años de edad, esa visión inicial se ha transformado en código real y proyectos publicados. Somos una familia unida forjando universos y experiencias interactivas desde cero. Cada línea de código y cada modelo 3D refleja nuestra dedicación absoluta y pasión por los videojuegos.",
+                role_dev_main: "Desarrollador Principal y Creador", desc_bruno: "Arquitecto principal del código y la lógica de juego. Responsable absoluto de la programación en Unreal Engine, optimización de sistemas y ensamblaje de mecánicas interactivas de supervivencia.",
+                role_design: "Diseño de Ideas y Producción", desc_yendri: "Ideólogo estratégico y co-creador de mecánicas. Aporta la visión fundamental, el diseño conceptual y la guía creativa que impulsa la dirección de cada proyecto del estudio.",
+                role_finance: "Manager de Finanzas", desc_ari: "Eje organizativo y administrativo del estudio. Controla la estabilidad financiera, gestión de recursos, licencias y la infraestructura operativa general del equipo.",
+                role_creative: "Dirección Creativa e Inspiración", desc_may: "Alma artística y emocional del equipo. Su perspectiva alimenta la atmósfera visual, la ambientación y el rumbo narrativo de nuestros mundos virtuales.",
+                role_tester: "Tester Principal", desc_eddy: "Encargado del control de calidad y auditoría de bugs. Pone a prueba cada sistema, IA y mapa hasta el límite para garantizar estabilidad y rendimiento óptimo.",
+                role_dev_sec: "Segundo Desarrollador (Fases Tempranas)", desc_nolo: "Apoyo especializado durante los ciclos iniciales. Contribuyó en la arquitectura de redes P2P y preparación de bases para las pruebas multijugador.",
+                outbreak_short_desc: "Sobrevive en un entorno hostil P2P. Explora, construye y enfréntate a infectados mutantes.",
+                mystery_desc_1: "Proyecto secreto en fase de desarrollo conceptual temprano.",
+                mystery_desc_2: "Nueva experiencia inmersiva en incubación técnica.",
+                avail_steam: "Disponible en Steam", gallery_title: "Galería Oficial", btn_steam: "Obtener en Steam",
+                ob_desc_1: "Experiencia de supervivencia P2P inmersiva (con servidores dedicados próximos). Inspirado en la exploración abierta tipo DayZ, <strong>no hay caminos prefijados; cada jugador forja su propia narrativa.</strong>",
+                ob_desc_2: "Enfréntate a infectados con patrones únicos: corredores rápidos, unidades explosivas y mutaciones severas. <em>(Nuevos jefes y mecánicas en desarrollo activo).</em>",
+                rm_1: "Lanzamiento oficial en Steam. Depuración intensiva de errores, balanceo de infectados básicos (corredores y explosivos) y optimización general de rendimiento.",
+                rm_2: "Implementación progresiva de Servidores Dedicados globales, adición de nuevas variantes mutantes de enemigos y el primer jefe de zona principal.",
+                rm_3: "Integración total de mandos y preparación técnica para adaptaciones en PlayStation, Nintendo Switch, Xbox y Steam Deck.",
+                rm_4: "Expansión masiva de terreno con nuevas zonas de exploración, sistemas de vehículos terrestres y refugios avanzados.",
+                support_desc: "Todo nuestro esfuerzo es independiente. Tu contribución directa nos ayuda a costear licencias de software, herramientas de desarrollo y servidores dedicados.",
+                empty_devlog: "Aún no hay actualizaciones publicadas. Vuelve pronto."
+            },
+            en: {
+                nav_studio: "Studio", nav_games: "Games", nav_support: "Support", nav_roadmap: "Roadmap", nav_devlog: "Devlog",
+                title_origin: "The Origin", title_team: "Core Team", title_games: "Our Titles", title_devlog: "Development Log",
+                title_faq: "Frequently Asked Questions", faq_subtitle: "Select a title to view its specific questions.",
+                title_support: "Support Development",
+                origin_p1: "We started this journey when our lead developer was only 12 years old. With the naive illusion of creating a massive open world shortly, we dived straight into indie development. After years of intense learning, logic debugging, and optimization, we understood the true magnitude of the industry.",
+                origin_p2: "Today, nearly 15 years old, that initial vision has transformed into real code and published projects. We are a united family forging universes and interactive experiences from scratch. Every line of code and 3D model reflects our absolute dedication and passion for video games.",
+                role_dev_main: "Lead Developer & Creator", desc_bruno: "Main architect of code and gameplay logic. Absolute responsible for Unreal Engine programming, system optimization, and interactive survival mechanics assembly.",
+                role_design: "Design & Production", desc_yendri: "Strategic ideologue and co-creator of mechanics. Provides fundamental vision, conceptual design, and creative guidance driving each studio project.",
+                role_finance: "Finance Manager", desc_ari: "Organizational and administrative backbone. Manages financial stability, resource allocation, licenses, and general operational infrastructure.",
+                role_creative: "Creative Direction & Inspiration", desc_may: "Artistic and emotional soul of the team. Her perspective fuels the visual atmosphere, setting, and narrative direction of our virtual worlds.",
+                role_tester: "Lead Tester", desc_eddy: "In charge of quality control and bug auditing. Tests every system, AI, and map to the limit to ensure stability and optimal performance.",
+                role_dev_sec: "Second Developer (Early Stages)", desc_nolo: "Specialized support during initial cycles. Contributed to P2P network architecture and multiplayer testing bases.",
+                outbreak_short_desc: "Survive in a hostile P2P environment. Explore, build, and face mutant infected.",
+                mystery_desc_1: "Secret project in early conceptual development phase.",
+                mystery_desc_2: "New immersive experience in technical incubation.",
+                avail_steam: "Available on Steam", gallery_title: "Official Gallery", btn_steam: "Get on Steam",
+                ob_desc_1: "Immersive P2P survival experience (dedicated servers coming soon). Inspired by DayZ open exploration, <strong>there are no fixed paths; every player forges their own narrative.</strong>",
+                ob_desc_2: "Face infected with unique patterns: fast runners, explosive units, and severe mutations. <em>(New bosses and mechanics in active development).</em>",
+                rm_1: "Official Steam launch. Intensive bug fixing, basic infected balancing (runners and explosives), and overall performance optimization.",
+                rm_2: "Progressive deployment of global Dedicated Servers, addition of new mutant enemy variants, and the first main zone boss.",
+                rm_3: "Full gamepad integration and technical preparation for PlayStation, Nintendo Switch, Xbox, and Steam Deck ports.",
+                rm_4: "Massive terrain expansion with new exploration zones, land vehicle systems, and advanced shelters.",
+                support_desc: "All our effort is independent. Your direct contribution helps us pay for software licenses, development tools, and dedicated servers.",
+                empty_devlog: "No updates published yet. Check back soon."
+            }
+        };
+
+        function changeLang(lang) {
+            document.getElementById('btn-es').classList.remove('active');
+            document.getElementById('btn-en').classList.remove('active');
+            document.getElementById(`btn-${lang}`).classList.add('active');
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(translations[lang][key]) el.innerHTML = translations[lang][key];
+            });
+        }
+
+        // 2. MODAL CONTROLS
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+            document.body.style.overflow = 'auto';
+            const video = document.getElementById('outbreak-video');
+            if (video && modalId === 'outbreak-modal') video.pause();
+        }
+        function closeModalOnBgClick(event, modalId) {
+            if (event.target.id === modalId) closeModal(modalId);
+        }
+        function openMysteryModal() {
+            alert("Este proyecto se encuentra actualmente en desarrollo confidencial. ¡Pronto revelaremos más detalles!");
+        }
+
+        // 3. FAQ GAME SELECTOR
+        function switchFaqGame(gameName) {
+            document.querySelectorAll('.faq-list').forEach(l => l.classList.remove('active'));
+            document.getElementById(`faq-${gameName}`).classList.add('active');
+        }
+
+        // 4. SECURE ADMIN PASSWORD (BASE64: 123456787 -> MTIzNDU2Nzg3)
+        function openAdminPrompt() {
+            openModal('pwd-modal');
+        }
+
+        function verifyAdminPassword() {
+            const pwdInput = document.getElementById('admin-pwd-input').value;
+            if (pwdInput && btoa(pwdInput) === "MTIzNDU2Nzg3") {
+                closeModal('pwd-modal');
+                document.getElementById('admin-panel').style.display = 'block';
+                document.getElementById('admin-pwd-input').value = '';
+            } else {
+                alert("Contraseña incorrecta.");
+            }
+        }
+
+        let tempBase64Image = "";
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    tempBase64Image = e.target.result;
+                    const preview = document.getElementById('image-preview');
+                    preview.src = tempBase64Image;
+                    preview.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function publishDevlog() {
+            const title = document.getElementById('devlog-title').value;
+            const content = document.getElementById('devlog-content').value;
+            
+            if (!title || !content) {
+                alert("Por favor, introduce un título y contenido para la publicación.");
+                return;
+            }
+
+            const post = { title, content, image: tempBase64Image, date: new Date().toLocaleDateString() };
+            let posts = JSON.parse(localStorage.getItem('briantDevlogPosts')) || [];
+            posts.unshift(post);
+            localStorage.setItem('briantDevlogPosts', JSON.stringify(posts));
+            
+            document.getElementById('devlog-title').value = '';
+            document.getElementById('devlog-content').value = '';
+            document.getElementById('image-preview').style.display = 'none';
+            tempBase64Image = "";
+            document.getElementById('admin-panel').style.display = 'none';
+            
+            loadDevlogPosts();
+        }
+
+        function loadDevlogPosts() {
+            const feed = document.getElementById('devlog-feed');
+            let posts = JSON.parse(localStorage.getItem('briantDevlogPosts')) || [];
+            
+            if (posts.length > 0) {
+                document.getElementById('empty-devlog').style.display = 'none';
+                feed.innerHTML = '';
+                posts.forEach(post => {
+                    const postHTML = `
+                        <div class="devlog-post">
+                            <h3 style="color: white; font-size: 1rem; margin-bottom: 4px;">${post.title}</h3>
+                            <small style="color: #666; font-size: 0.75rem;">Publicado el: ${post.date}</small>
+                            <p style="margin-top: 8px; font-size: 0.85rem; color: #ddd;">${post.content.replace(/\n/g, '<br>')}</p>
+                            ${post.image ? `<img src="${post.image}" alt="Update Image">` : ''}
+                        </div>
+                    `;
+                    feed.innerHTML += postHTML;
+                });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadDevlogPosts);
+    </script>
+</body>
+</html>
